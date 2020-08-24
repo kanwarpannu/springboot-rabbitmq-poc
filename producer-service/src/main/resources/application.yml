@@ -3,3 +3,7 @@ spring:
     name: producer-service
 server:
   port: 9201
+directAsyncConsumer:
+  routingKey: 1000
+directSyncConsumer:
+  routingKey: 2000

@@ -10,10 +10,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitConfig {
 
-    @Qualifier("direct.exchange.async")
     @Bean
-    public DirectExchange queryExchange() {
+    @Qualifier("direct.exchange.async")
+    public DirectExchange queryDirectAsyncExchange() {
         return new DirectExchange("direct.exchange.async");
+    }
+
+    @Bean
+    @Qualifier("direct.exchange.sync")
+    public DirectExchange queryDirectSyncExchange() {
+        return new DirectExchange("direct.exchange.sync");
     }
 
     @Bean

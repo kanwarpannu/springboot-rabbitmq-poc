@@ -17,6 +17,7 @@
 
     <modules>
         <module>producer-service</module>
+        <module>direct-consumer-service</module>
     </modules>
 
     <properties>

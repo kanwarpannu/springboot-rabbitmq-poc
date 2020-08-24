@@ -1,12 +1,13 @@
 package com.poc.rabbit.producerservice.controllers;
 
+import com.poc.rabbit.producerservice.models.Employee;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Random;
@@ -15,31 +16,43 @@ import java.util.Random;
 @Slf4j
 public class DirectMessagingController {
 
-    //TODO: put static values into config file
-    //TODO: Add rabbit port binding to config file and send a test message by custom binding a queue
-    private static final String ROUTING_KEY = "storeNumber";
+    private final String asyncRoutingKey;
+    private final String syncRoutingKey;
     private final RabbitTemplate template;
-    private final String storeNumber;
-    private final DirectExchange queryExchange;
+    private final DirectExchange directAsyncExchange;
+    private final DirectExchange directSyncExchange;
 
     public DirectMessagingController(RabbitTemplate template,
-                                     @Value("${storeNumber}") String storeNumber,
-                                     @Qualifier("direct.exchange.async") DirectExchange queryExchange) {
+                                     @Value("directAsyncConsumer.routingKey") String asyncRoutingKey,
+                                     @Value("directSyncConsumer.routingKey") String syncRoutingKey,
+                                     @Qualifier("direct.exchange.async") DirectExchange directAsyncExchange,
+                                     @Qualifier("direct.exchange.sync") DirectExchange directSyncExchange) {
         this.template = template;
-        this.storeNumber = storeNumber;
-        this.queryExchange = queryExchange;
+        this.asyncRoutingKey = asyncRoutingKey;
+        this.syncRoutingKey = syncRoutingKey;
+        this.directAsyncExchange = directAsyncExchange;
+        this.directSyncExchange = directSyncExchange;
     }
 
-    @PostMapping("/async-direct-messaging")
-    public QueryResponse query() {
-        QueryRequest queryRequest = QueryRequest.builder()
-                .userId(userId().toString())
-                .storeNumber(storeNumber)
+    @GetMapping("/async-get-employee")
+    public void queryAsyncEmployee() {
+        Employee employee = Employee.builder()
+                .employeeId(userId().toString())
+                .firstName("First Name")
+                .lastName("Last Name")
+                .phoneNumber("123123123")
                 .build();
-        log.info("Sending query for store number " + storeNumber);
-        QueryResponse response = template.convertSendAndReceiveAsType(queryExchange.getName(), ROUTING_KEY, queryRequest, ParameterizedTypeReference.forType(QueryResponse.class));
-        log.info("Response: " + response);
-        return response;
+        log.info("Sending message to get employee async");
+        template.convertAndSend(directAsyncExchange.getName(), asyncRoutingKey, employee);
+    }
+
+    @GetMapping("/sync-get-employee")
+    public Employee querySyncEmployee() {
+        Employee employee = Employee.builder()
+                .employeeId(userId().toString())
+                .build();
+        log.info("Sending message to get employee async");
+        return template.convertSendAndReceiveAsType(directSyncExchange.getName(), syncRoutingKey, employee, ParameterizedTypeReference.forType(Employee.class));
     }
 
     private Integer userId() {
