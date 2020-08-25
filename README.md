@@ -18,11 +18,9 @@ distributor(DB with 100 of everything)
 ----------------------------------------------
   
 //todo's:
-1. There is an api in weapon shop which starts the request/response cycle using swagger.  
-2. Create a sync flow? (for magic wands?)(Do at last)  
-3. Write test which uses a mock RabbitMQ(for weapons?):  https://github.com/fridujo/rabbitmq-mock  
-4. See if we can mock rabbitmq using spring-rabbit-test (for shields?).
-5. Use spies for capture of messages?  
+3. Write test which uses a mock RabbitMQ(for fanout exchange testing):  https://github.com/fridujo/rabbitmq-mock  
+4. See if we can mock rabbitmq using spring-rabbit-test (for direct exchange testing).
+5. Use spies for capture of messages? for topic exchange testing 
 6. Force usage of different types of exchanges?  
 7. Whose responsibility is to bind queue to an exchange. producer or consumer or both? check this link  
 https://gigi.nullneuron.net/gigilabs/rabbitmq-who-creates-the-queues-and-exchanges/  
@@ -32,3 +30,6 @@ https://stackoverflow.com/questions/4545660/rabbitmq-creating-queues-and-binding
 10. dlq's can be used in 9th case.  
 11. Spring sleuth to trace message. 
 12. Spring cloud contracts
+13. do logging
+14. Groovy acceptance tests
+15. Rabbit Sync is also called rabbit rpc call

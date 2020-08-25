@@ -23,8 +23,8 @@ public class DirectMessagingController {
     private final DirectExchange directSyncExchange;
 
     public DirectMessagingController(RabbitTemplate template,
-                                     @Value("directAsyncConsumer.routingKey") String asyncRoutingKey,
-                                     @Value("directSyncConsumer.routingKey") String syncRoutingKey,
+                                     @Value("${directAsyncConsumer.routingKey}") String asyncRoutingKey,
+                                     @Value("${directSyncConsumer.routingKey}") String syncRoutingKey,
                                      @Qualifier("direct.exchange.async") DirectExchange directAsyncExchange,
                                      @Qualifier("direct.exchange.sync") DirectExchange directSyncExchange) {
         this.template = template;

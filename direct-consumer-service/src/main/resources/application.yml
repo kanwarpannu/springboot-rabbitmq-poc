@@ -3,3 +3,11 @@ spring:
     name: direct-consumer-service
 server:
   port: 9202
+directAsyncConsumer:
+  exchangeName: direct.exchange.async
+  queueName: direct.exchange.async.queue
+  routingKey: 1000
+directSyncConsumer:
+  exchangeName: direct.exchange.sync
+  queueName: direct.exchange.sync.queue
+  routingKey: 2000

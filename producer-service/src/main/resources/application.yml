@@ -4,6 +4,8 @@ spring:
 server:
   port: 9201
 directAsyncConsumer:
+  exchangeName: direct.exchange.async
   routingKey: 1000
 directSyncConsumer:
+  exchangeName: direct.exchange.sync
   routingKey: 2000
