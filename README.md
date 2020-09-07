@@ -33,3 +33,6 @@ https://stackoverflow.com/questions/4545660/rabbitmq-creating-queues-and-binding
 13. do logging
 14. Groovy acceptance tests
 15. Rabbit Sync is also called rabbit rpc call
+
+download zipkin from docker `docker run -d -p 9411:9411 openzipkin/zipkin:2.21`  
+Note: Zipkin is used for tracing and checking performance, NOT as central logging  
