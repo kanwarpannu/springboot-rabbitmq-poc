@@ -35,4 +35,15 @@ https://stackoverflow.com/questions/4545660/rabbitmq-creating-queues-and-binding
 15. Rabbit Sync is also called rabbit rpc call
 
 download zipkin from docker `docker run -d -p 9411:9411 openzipkin/zipkin:2.21`  
-Note: Zipkin is used for tracing and checking performance, NOT as central logging  
+Note: Zipkin is used for tracing and checking performance, NOT as central logging 
+elastic search-kibana added to docker-compose (takes 1 min to start)  
+elastic search is where all logs get stored and indexed, kibana is used to visualize  
+logstash is used as pipeline redirect all logs to elastic search  
+https://cassiomolin.com/2019/06/30/log-aggregation-with-spring-boot-elastic-stack-and-docker/     
+
+In this project we using zipkin for tracing and elk stack for logging  
+    
+In application, we imported logstash dependency and added logback.xml(to create a bean for it) and asked it to emit it to logstash at 5044  
+  
+In the docker, we created logstash and configured it using logstash.conf
+
