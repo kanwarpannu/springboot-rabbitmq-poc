@@ -1,6 +1,3 @@
-spring:
-  application:
-    name: producer-service
 server:
   port: 9201
 directAsyncConsumer:
@@ -9,3 +6,12 @@ directAsyncConsumer:
 directSyncConsumer:
   exchangeName: direct.exchange.sync
   routingKey: 2000
+logging:
+  config: classpath:logback-spring.xml
+spring:
+  sleuth:
+    baggage:
+      remote-fields:
+        - "requestId"
+      correlation-fields:
+        - "requestId"

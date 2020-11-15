@@ -1,5 +1,8 @@
 package com.poc.rabbit.producerservice.controllers;
 
+import brave.baggage.BaggageField;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.poc.rabbit.producerservice.models.Employee;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -23,22 +26,26 @@ public class DirectMessagingController {
     private final RabbitTemplate template;
     private final DirectExchange directAsyncExchange;
     private final DirectExchange directSyncExchange;
-    public AtomicInteger requestId = new AtomicInteger();
+    private final AtomicInteger requestId = new AtomicInteger();
+    private final ObjectMapper objectMapper;
 
     public DirectMessagingController(RabbitTemplate template,
                                      @Value("${directAsyncConsumer.routingKey}") String asyncRoutingKey,
                                      @Value("${directSyncConsumer.routingKey}") String syncRoutingKey,
                                      @Qualifier("direct.exchange.async") DirectExchange directAsyncExchange,
-                                     @Qualifier("direct.exchange.sync") DirectExchange directSyncExchange) {
+                                     @Qualifier("direct.exchange.sync") DirectExchange directSyncExchange,
+                                     ObjectMapper objectMapper) {
         this.template = template;
         this.asyncRoutingKey = asyncRoutingKey;
         this.syncRoutingKey = syncRoutingKey;
         this.directAsyncExchange = directAsyncExchange;
         this.directSyncExchange = directSyncExchange;
+        this.objectMapper = objectMapper;
     }
 
     @GetMapping("/async-get-employee")
     public void queryAsyncEmployee() {
+        configMdc();
         Employee employee = Employee.builder()
                 .employeeId(userId().toString())
                 .firstName("First Name")
@@ -50,13 +57,21 @@ public class DirectMessagingController {
     }
 
     @GetMapping("/sync-get-employee")
-    public Employee querySyncEmployee() {
-        MDC.put("requestId", String.valueOf(requestId.incrementAndGet()));
+    public Employee querySyncEmployee() throws JsonProcessingException {
+        configMdc();
         Employee employee = Employee.builder()
                 .employeeId(userId().toString())
                 .build();
         log.info("Sending message to get employee sync");
-        return template.convertSendAndReceiveAsType(directSyncExchange.getName(), syncRoutingKey, employee, ParameterizedTypeReference.forType(Employee.class));
+        Employee receivedEmployeeInfo = template.convertSendAndReceiveAsType(directSyncExchange.getName(), syncRoutingKey, employee, ParameterizedTypeReference.forType(Employee.class));
+        log.info("Employee received is " + objectMapper.writeValueAsString(receivedEmployeeInfo));
+        return receivedEmployeeInfo;
+    }
+
+    private void configMdc() {
+        String requestIdValue = String.valueOf(requestId.incrementAndGet());
+        BaggageField.create("requestId").updateValue(requestIdValue);
+        MDC.put("requestId", requestIdValue);
     }
 
     private Integer userId() {

@@ -37,8 +37,8 @@
             </providers>
         </encoder>
     </appender>
-<!--  Only relevant logs are printed and sent to kibana  -->
-    <logger name="com.poc.rabbit.producerservice" additivity="false">
+    <!--  Only relevant logs are printed and sent to kibana  -->
+    <logger name="com.poc.rabbit.directconsumer" additivity="false">
         <appender-ref ref="logstash"/>
         <appender-ref ref="CONSOLE"/>
     </logger>
