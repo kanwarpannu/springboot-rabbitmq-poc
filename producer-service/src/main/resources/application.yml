@@ -6,6 +6,8 @@ directAsyncConsumer:
 directSyncConsumer:
   exchangeName: direct.exchange.sync
   routingKey: 2000
+directFanoutProducer:
+  exchangeName: fanout.exchange.direct
 logging:
   config: classpath:logback-spring.xml
 spring:

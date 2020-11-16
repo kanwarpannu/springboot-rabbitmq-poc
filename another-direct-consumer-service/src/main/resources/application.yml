@@ -1,0 +1,12 @@
+server:
+  port: 9203
+directFanoutProducer:
+  exchangeName: fanout.exchange.direct
+  queueName: fanout.exchange.direct.queue
+spring:
+  sleuth:
+    baggage:
+      remote-fields:
+        - "requestId"
+      correlation-fields:
+        - "requestId"

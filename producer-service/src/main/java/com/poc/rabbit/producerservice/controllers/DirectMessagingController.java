@@ -7,6 +7,7 @@ import com.poc.rabbit.producerservice.models.Employee;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +27,7 @@ public class DirectMessagingController {
     private final RabbitTemplate template;
     private final DirectExchange directAsyncExchange;
     private final DirectExchange directSyncExchange;
+    private final FanoutExchange directFanoutExchange;
     private final AtomicInteger requestId = new AtomicInteger();
     private final ObjectMapper objectMapper;
 
@@ -34,12 +36,14 @@ public class DirectMessagingController {
                                      @Value("${directSyncConsumer.routingKey}") String syncRoutingKey,
                                      @Qualifier("direct.exchange.async") DirectExchange directAsyncExchange,
                                      @Qualifier("direct.exchange.sync") DirectExchange directSyncExchange,
+                                     @Qualifier("fanout.exchange.direct") FanoutExchange directFanoutExchange,
                                      ObjectMapper objectMapper) {
         this.template = template;
         this.asyncRoutingKey = asyncRoutingKey;
         this.syncRoutingKey = syncRoutingKey;
         this.directAsyncExchange = directAsyncExchange;
         this.directSyncExchange = directSyncExchange;
+        this.directFanoutExchange = directFanoutExchange;
         this.objectMapper = objectMapper;
     }
 
@@ -66,6 +70,19 @@ public class DirectMessagingController {
         Employee receivedEmployeeInfo = template.convertSendAndReceiveAsType(directSyncExchange.getName(), syncRoutingKey, employee, ParameterizedTypeReference.forType(Employee.class));
         log.info("Employee received is " + objectMapper.writeValueAsString(receivedEmployeeInfo));
         return receivedEmployeeInfo;
+    }
+
+    @GetMapping("/fanout-get-employee")
+    public void queryFanoutEmployee() {
+        configMdc();
+        Employee employee = Employee.builder()
+                .employeeId(userId().toString())
+                .firstName("Fanout Name")
+                .lastName("Fanout Name")
+                .phoneNumber("9876543210")
+                .build();
+        log.info("Sending message to get employee fanout");
+        template.convertAndSend(directFanoutExchange.getName(), "", employee);
     }
 
     private void configMdc() {
