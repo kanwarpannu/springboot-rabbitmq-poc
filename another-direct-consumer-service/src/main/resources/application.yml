@@ -2,7 +2,10 @@ server:
   port: 9203
 directFanoutProducer:
   exchangeName: fanout.exchange.direct
-  queueName: fanout.exchange.direct.queue
+  queueName: fanout.exchange.direct.queue.2
+indirectFanoutProducer:
+  exchangeName: fanout.exchange.indirect
+  queueName: fanout.exchange.indirect.queue
 spring:
   sleuth:
     baggage:

@@ -8,6 +8,11 @@ directSyncConsumer:
   exchangeName: direct.exchange.sync
   queueName: direct.exchange.sync.queue
   routingKey: 2000
+directFanoutProducer:
+  exchangeName: fanout.exchange.direct
+  queueName: fanout.exchange.direct.queue.1
+indirectFanoutProducer:
+  exchangeName: fanout.exchange.indirect
 spring:
   sleuth:
     baggage:

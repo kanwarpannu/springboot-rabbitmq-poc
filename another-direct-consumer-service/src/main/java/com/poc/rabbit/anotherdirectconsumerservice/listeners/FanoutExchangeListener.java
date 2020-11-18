@@ -21,4 +21,9 @@ public class FanoutExchangeListener {
         log.info("Request received: " + objectMapper.writeValueAsString(payload));
     }
 
+    @RabbitListener(queues = "#{queryIndirectFanoutQueue.getName()}")
+    public void handleIndirectFanoutMessage(Employee payload) throws JsonProcessingException {
+        log.info("Request received: " + objectMapper.writeValueAsString(payload));
+    }
+
 }

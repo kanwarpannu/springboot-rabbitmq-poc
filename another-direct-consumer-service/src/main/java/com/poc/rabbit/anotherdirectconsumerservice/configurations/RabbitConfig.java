@@ -17,10 +17,17 @@ public class RabbitConfig {
     private final String directFanoutQueue;
     private final String directFanoutExchange;
 
+    private final String indirectFanoutQueue;
+    private final String indirectFanoutExchange;
+
     public RabbitConfig(@Value("${directFanoutProducer.queueName}") String directFanoutQueue,
-                        @Value("${directFanoutProducer.exchangeName}") String directFanoutExchange) {
+                        @Value("${directFanoutProducer.exchangeName}") String directFanoutExchange,
+                        @Value("${indirectFanoutProducer.queueName}") String indirectFanoutQueue,
+                        @Value("${indirectFanoutProducer.exchangeName}") String indirectFanoutExchange) {
         this.directFanoutQueue = directFanoutQueue;
         this.directFanoutExchange = directFanoutExchange;
+        this.indirectFanoutQueue = indirectFanoutQueue;
+        this.indirectFanoutExchange = indirectFanoutExchange;
     }
 
     @Bean
@@ -40,6 +47,27 @@ public class RabbitConfig {
     public Binding queryDirectExchangeAsyncBinding(
             @Qualifier("fanout.exchange.direct") FanoutExchange exchange,
             @Qualifier("fanout.exchange.direct.queue") Queue queue) {
+        return BindingBuilder.bind(queue)
+                .to(exchange);
+    }
+
+    @Bean
+    @Qualifier("fanout.exchange.indirect")
+    public FanoutExchange queryIndirectFanoutExchange() {
+        return new FanoutExchange(indirectFanoutExchange);
+    }
+
+    @Bean
+    @Qualifier("fanout.exchange.indirect.queue")
+    public Queue queryIndirectFanoutQueue() {
+        return new Queue(indirectFanoutQueue);
+    }
+
+    @Bean
+    @Qualifier("fanout.exchange.indirect.binding")
+    public Binding queryIndirectExchangeAsyncBinding(
+            @Qualifier("fanout.exchange.indirect") FanoutExchange exchange,
+            @Qualifier("fanout.exchange.indirect.queue") Queue queue) {
         return BindingBuilder.bind(queue)
                 .to(exchange);
     }
