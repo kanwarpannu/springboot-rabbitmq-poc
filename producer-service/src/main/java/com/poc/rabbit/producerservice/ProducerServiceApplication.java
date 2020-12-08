@@ -2,6 +2,9 @@ package com.poc.rabbit.producerservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+//TODO: Move to spring cloud stream
+//TODO: Add spring contracts first
 //TODO: Add Test cases
 //TODO: add test case for logs (look at other logging test cases)
 //TODO: see if anything can be configurable and add to config file

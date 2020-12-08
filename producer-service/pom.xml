@@ -49,6 +49,18 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+            <plugin>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+                <version>${dependency.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <testFramework>JUNIT5</testFramework>
+                    <packageWithBaseClasses>
+                        com.poc.rabbit.producerservice.contract
+                    </packageWithBaseClasses>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

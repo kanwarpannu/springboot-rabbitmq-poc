@@ -56,7 +56,7 @@ public class DirectMessagingController {
                 .lastName("Last Name")
                 .phoneNumber("123123123")
                 .build();
-        log.info("Sending message to get employee async");
+        log.info("Sending employee async");
         template.convertAndSend(directAsyncExchange.getName(), asyncRoutingKey, employee);
     }
 

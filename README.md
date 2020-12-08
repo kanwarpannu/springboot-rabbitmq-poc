@@ -5,14 +5,9 @@ Spring boot/Java POC using rabbitmq dependencies coming from spring-boot-starter
 ---------------------------------------------  
 ```
 
-Shop(sell weapons and shields max of 10 each(rest api))  
-
-Shop(separate direct exchanges for weapons, shields) --(rpc call, timeout less than rest call's)-> (separate direct queues for weapons, shields) storage  
-  
-if inventory below 10, starts with 20  
-storage(topic exchange) --(async call)--> (queues for weapons, shields) distributor  
-
-distributor(DB with 100 of everything)
+When completed this application tends to be a simple java app using rabbitmq
+for communication. It uses spring contracts for testing.
+It uses slueth, logstash and kibana as support roles.
 ```  
   
 ----------------------------------------------
